@@ -16,16 +16,19 @@
   }
 
   .product-card {
-    border: 1px solid #ddd;
+    background-color: #111;
+    border: 1px solid #444;
     border-radius: 10px;
     padding: 15px;
     text-align: center;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     height: 100%;
+    color: #fff;
   }
 
   .product-card:hover {
     transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
   }
 
   .product-img {
@@ -33,12 +36,22 @@
     height: 180px;
     object-fit: contain;
     margin-bottom: 10px;
+    background-color: #222;
+    border-radius: 8px;
+    transition: box-shadow 0.4s ease;
+    padding: 10px;
+  }
+
+  .product-card:hover .product-img {
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+    background-color: #000;
   }
 
   .product-name {
     font-weight: bold;
     font-size: 16px;
     margin-bottom: 5px;
+    color: #fff;
   }
 
   .product-price {
@@ -46,22 +59,47 @@
     font-weight: bold;
     margin-bottom: 10px;
   }
+
+  .text-muted {
+    color: #ccc !important;
+  }
+
+  .btn-warning {
+    color: #000;
+    font-weight: bold;
+  }
 </style>
+
 
 <div class="container products-container">
   <h2 class="products-title">Our Products</h2>
+
+  <!-- 🔍 Search Form -->
+  <form method="GET" class="mb-4">
+    <div class="input-group">
+      <input type="text" name="q" class="form-control" placeholder="Search by name or category..." value="{{ request.GET.q }}">
+      <button type="submit" class="btn btn-dark">Search</button>
+    </div>
+  </form>
 
   <div class="row g-4">
     {% for product in products %}
       <div class="col-sm-6 col-md-4 col-lg-3">
         <div class="product-card">
+  <a href="{% url 'product_details' product.id %}">
           <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+    </a>
           <div class="product-name">{{ product.name }}</div>
           <div class="product-price">${{ product.price }}</div>
           <div class="text-muted">Stock: {{ product.stock }}</div>
-                {% if not request.user.is_superuser %}
-          <a href="{% url 'add_to_cart' product.id %}" class="btn btn-warning">Add to Cart</a>
-          {% endif %}
+          {% if request.user.is_authenticated %}
+  {% if not request.user.is_superuser %}
+    <a href="{% url 'add_to_cart' product.id %}" class="btn btn-warning">Add to Cart</a>
+  {% endif %}
+{% else %}
+  <a href="{% url 'login' %}?next={% url 'add_to_cart' product.id %}" class="btn btn-warning">Add to Cart</a>
+{% endif %}
+
         </div>
       </div>
     {% empty %}
@@ -69,6 +107,7 @@
     {% endfor %}
   </div>
 </div>
+
 
 
 {% endblock %}

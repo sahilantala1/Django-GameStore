@@ -1,42 +1,169 @@
 {% extends 'base_a.html' %}
 {% load static %}
+{% load widget_tweaks %}
 {% block start %}
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header bg-dark text-white text-center">
-          <h4>Register</h4>
-        </div>
-        <div class="card-body">
-          <form method="POST">
-            {% csrf_token %}
-            <div class="mb-3">
-              <label for="username" class="form-label">Username</label>
-                {{form.username}}
-            </div>
-            <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
-              {{form.email}}
-            </div>
-            <div class="mb-3">
-              <label for="password1" class="form-label">Password</label>
-              {{form.password1}}
-            </div>
-            <div class="mb-3">
-              <label for="password2" class="form-label">Confirm Password</label>
-              {{form.password2}}
-            </div>
-            <div class="d-grid">
-              <button type="submit" class="btn btn-danger">Register</button>
-            </div>
-          </form>
-          <div class="mt-3 text-center">
-            <small>Already have an account? <a href="{% url 'login' %}">Login here</a></small>
-          </div>
-        </div>
-      </div>
+<!-- Navbar -->
+{% include 'navbar.html' %}
+<!-- Registration Box -->
+<div class="register-box">
+  <img src="{% static 'images/logo.png' %}" alt="Logo" />
+  <p class="sitename">GameIsOn</p>
+  <p>walk into the wild</p>
+
+  <form method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="username" class="form-label">Username</label>
+      {{ form.username|add_class:"form-control" }}
+      {% if form.username.errors %}
+        <div class="text-danger">{{ form.username.errors.0 }}</div>
+      {% endif %}
     </div>
+
+    <div class="form-group">
+      <label for="email" class="form-label">Email</label>
+      {{ form.email|add_class:"form-control" }}
+      {% if form.email.errors %}
+        <div class="text-danger">{{ form.email.errors.0 }}</div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="password1" class="form-label">Password</label>
+      {{ form.password1|add_class:"form-control" }}
+      {% if form.password1.errors %}
+        <div class="text-danger">{{ form.password1.errors.0 }}</div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="password2" class="form-label">Confirm Password</label>
+      {{ form.password2|add_class:"form-control" }}
+      {% if form.password2.errors %}
+        <div class="text-danger">{{ form.password2.errors.0 }}</div>
+      {% endif %}
+    </div>
+
+    <button type="submit" class="submit-btn">Register</button>
+  </form>
+
+  <div class="login-link">
+    Already have an account? <a href="{% url 'login' %}">Log in</a>
   </div>
 </div>
+
+<!-- Fonts & Icons -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+  rel="stylesheet"
+/>
+
+<style>
+  /* Reset and fonts */
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.6),
+        rgba(0, 0, 0, 0.6)
+      ),
+      url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1050&q=80')
+        no-repeat center center/cover;
+    min-height: 100vh;
+    color: white;
+  }
+
+  /* Center and style the registration box */
+  .register-box {
+    background: rgba(0, 0, 0, 0.85);
+    max-width: 450px;
+    margin: 50px auto 80px; /* spaced from navbar and bottom */
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    text-align: center;
+  }
+
+  .register-box img {
+    width: auto;
+    height: 170px;
+    margin-bottom: 10px;
+  }
+
+  .register-box .sitename {
+    color: white;
+    font-size: 55px;
+    margin-bottom: 5px;
+  }
+
+  .register-box p {
+    color: #aaa;
+    font-size: 14px;
+    margin-bottom: 30px;
+  }
+
+  .form-label {
+    color: #ccc;
+    text-align: left;
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    background-color: #1f1f1f;
+    color: white;
+    margin-bottom: 15px;
+    font-size: 14px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    background-color: #e50914;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .submit-btn:hover {
+    background-color: #c20812;
+  }
+
+  .text-danger {
+    font-size: 13px;
+    text-align: left;
+    color: #ff6b6b;
+    margin-bottom: 10px;
+  }
+
+  .login-link {
+    margin-top: 15px;
+    font-size: 13px;
+    color: #aaa;
+  }
+
+  .login-link a {
+    color: #e50914;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .login-link a:hover {
+    text-decoration: underline;
+  }
+</style>
+
 {% endblock %}

@@ -40,7 +40,8 @@ INSTALLED_APPS = [
 ]
 
 EXTERNAL_APPS = [
-    'LiveGameStore'
+    'LiveGameStore',
+    'widget_tweaks'
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS

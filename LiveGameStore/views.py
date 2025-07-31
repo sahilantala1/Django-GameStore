@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404, redirect
 from .models import Product,Cart,CartItem
 from .forms import CreateUserForm,ProductForm
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+
 # Create your views here.
 
 def login_page(req):
@@ -45,17 +47,23 @@ def register(req):
 
         context = {'form':form}
         return render(req,'register.html',context)
-
-@login_required(login_url='login')
+#
+# @login_required(login_url='login')
 def home(req):
     context ={}
     return render(req,'index.html',context)
 
-
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def products(req):
-    product_data = Product.objects.all()
-    context = {'products':product_data}
+    query = req.GET.get('q', '').strip()
+    products = Product.objects.all()
+
+    if query:
+        products = products.filter(
+            Q(name__icontains=query) |
+            Q(category__icontains=query)  # If category is a ForeignKey
+        )
+    context = {'products':products}
     return render(req,'products.html',context)
 
 @login_required(login_url='login')
@@ -65,9 +73,42 @@ def adminviewpage(req):
 
 @login_required(login_url='login')
 def manageProduct(req):
-    product_data = Product.objects.all()
-    context = {'products': product_data}
-    return render(req,'manage_product.html',context)
+    products = Product.objects.all()
+    categories = Product.CATEGORY
+
+    # Individual filters
+    name_query = req.GET.get('name', '').strip()
+    category_query = req.GET.get('category', '').strip()
+    price_query = req.GET.get('price', '').strip()
+    q = req.GET.get('q', '').strip()
+
+    # Apply filters
+    if name_query:
+        products = products.filter(name__icontains=name_query)
+
+    if category_query:
+        products = products.filter(category__icontains=category_query)  # if category is a CharField
+
+    if price_query:
+        try:
+            products = products.filter(price__lte=float(price_query))
+        except ValueError:
+            pass
+
+    # General search box
+    if q:
+        products = products.filter(
+            Q(name__icontains=q) |
+            Q(category__icontains=q)
+        )
+
+    context = {
+        'products': products,
+        'categories': categories,
+        'selected_category': category_query,
+        'request': req
+    }
+    return render(req, 'manage_product.html', context)
 
 @login_required(login_url='login')
 def add_product(request):
@@ -147,3 +188,9 @@ def remove_cart_item(request, item_id):
     item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
     item.delete()
     return redirect('show_cart')
+
+def product_detail(request,id):
+    product_data = Product.objects.get(id=id)
+
+    context = {'product_data':product_data}
+    return render(request,'product_details.html',context)

@@ -3,8 +3,20 @@
   src: url('../fonts/Dynatecha-Regular.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'logofont';
+  src: url(' ../fonts/Kashima Demo.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+
 /* Example usage */
 nav {
   font-family: 'Dynatecha-Regular', sans-serif;
 }
 
+.sitename {
+  font-family: "logofont", cursive;
+}
