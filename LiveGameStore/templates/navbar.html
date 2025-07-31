@@ -1,0 +1,115 @@
+{% extends 'base_a.html' %}
+{% load static %}
+{% block start %}
+<style>
+  .navbar-custom {
+    background-color: #000;
+    padding: 10px 20px;
+  }
+
+  .navbar-brand {
+    text-decoration: none;
+  }
+
+  .navbar-brand:hover {
+    text-decoration: none;
+  }
+
+  /* Fixed brand text color and hover */
+  .rog-text {
+    color: #e1001a;
+    font-weight: bold;
+    letter-spacing: 1px;
+    line-height: 1.1;
+  }
+
+  .rog-text:hover {
+    color: #e1001a; /* Prevent color change on hover */
+  }
+
+  .navbar-nav .nav-link {
+    color: white !important;
+    font-weight: 600;
+    font-size: 14px;
+    margin: 0 10px;
+  }
+
+  .navbar-nav .nav-link:hover {
+    color: #e1001a !important;
+  }
+
+  .navbar-icons i {
+    color: #fff;
+    margin-left: 15px;
+    cursor: pointer;
+  }
+  .asus-text{
+    font-size:25px;
+  }
+
+  .bottom-bar {
+    background-color: #e1001a;
+    color: white;
+    text-align: right;
+    padding: 6px 20px;
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  .rog-logo {
+    height: 70px;
+    margin-right: 10px;
+  }
+
+  .bottom-bar{
+    text-align: center;
+  }
+  .user-profile-name{
+     color:white;
+     font-size:15px;
+  }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-custom">
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+      <img src="{% static 'images/logo.png' %}" alt="ROG Logo" class="rog-logo">
+      <span class="rog-text">REPUBLIC OF<br>GAMERS</span>
+    </a>
+
+    <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="{% url 'product' %}">PRODUCTS</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">INNOVATION</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">DOWNLOADS</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">COMMUNITY</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">WHAT'S HOT</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">SUPPORT</a></li>
+        {% if request.user.is_superuser %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'admin_login' %}">Admin</a></li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <div class="navbar-icons d-flex align-items-center">
+      <p class="user-profile-name mt-3" >Hello,  {{request.user}}</p>
+      <a class="asus-text" href="{% url 'logout' %}" ><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+      {% if not request.user.is_superuser %}
+      <a class="asus-text" href="{% url 'show_cart' %}" ><i class="fa-solid fa-cart-shopping"></i></a>
+      {% endif %}
+<!--      <i class="fas fa-search"></i>-->
+<!--      <i class="fas fa-bell"></i>-->
+    </div>
+  </div>
+</nav>
+
+<!-- Bottom red bar -->
+<div class="bottom-bar">
+  Log in to the ROG Elite Rewards program now!
+</div>
+
+{% endblock %}

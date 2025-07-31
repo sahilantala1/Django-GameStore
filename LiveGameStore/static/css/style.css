@@ -1,0 +1,10 @@
+@font-face {
+  font-family: 'Dynatecha-Regular';
+  src: url('../fonts/Dynatecha-Regular.ttf') format('truetype');
+}
+
+/* Example usage */
+nav {
+  font-family: 'Dynatecha-Regular', sans-serif;
+}
+

@@ -1,0 +1,76 @@
+{% extends 'base_a.html' %}
+{% load static %}
+{% block start %}
+{% include 'navbar.html' %}
+
+<style>
+  .admin-panel {
+    padding: 30px;
+  }
+
+  .admin-title {
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+  }
+
+  .card:hover {
+    transform: scale(1.02);
+  }
+
+  .card-icon {
+    font-size: 40px;
+    margin-bottom: 15px;
+    color: #fff;
+  }
+
+  .bg-products { background-color: #007bff; }
+  .bg-users { background-color: #28a745; }
+  .bg-orders { background-color: #ffc107; }
+</style>
+
+<div class="container admin-panel">
+  <h2 class="admin-title">Admin Dashboard</h2>
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card text-white bg-products p-4 text-center">
+        <div class="card-icon">
+          <i class="fas fa-laptop"></i>
+        </div>
+        <h5 class="card-title">Manage Products</h5>
+        <a href="{% url 'manage_product' %}" class="btn btn-light mt-3">Go</a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card text-white bg-users p-4 text-center">
+        <div class="card-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <h5 class="card-title">Manage Users</h5>
+        <a href="" class="btn btn-light mt-3">Go</a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card text-dark bg-orders p-4 text-center">
+        <div class="card-icon">
+          <i class="fas fa-shopping-cart"></i>
+        </div>
+        <h5 class="card-title">Manage Orders</h5>
+        <a href="" class="btn btn-dark mt-3">Go</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
