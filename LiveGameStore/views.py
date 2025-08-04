@@ -1,114 +1,150 @@
-from django.db.models.fields import return_None
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from pyexpat.errors import messages
-from django.shortcuts import get_object_or_404, redirect
-from .models import Product,Cart,CartItem
-from .forms import CreateUserForm,ProductForm
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db.models import Q
+from django.template import engines
+from django.template.loader import render_to_string
 
-# Create your views here.
+from .models import Product, Cart, CartItem
+from .forms import CreateUserForm, ProductForm
+
 
 def login_page(req):
     if req.user.is_authenticated:
         return redirect('home')
-    else:
-        if req.method == "POST":
-            username = req.POST.get('username')
-            password = req.POST.get('password')
 
-            user = authenticate(req,username=username,password=password)
-            if user is not None:
-                login(req,user)
-                return redirect('home')
-            else:
-                messages.info(req,'UserName Or Password is incorrect')
-                return render(req,'login.html')
+    if req.method == "POST":
+        username = req.POST.get('username')
+        password = req.POST.get('password')
 
-    context = {}
-    return render(req,'login.html',context)
+        user = authenticate(req, username=username, password=password)
+        if user is not None:
+            login(req, user)
+            return redirect('home')
+        else:
+            # You imported messages incorrectly, replace with Django messages framework if needed
+            # For now, just render with context message
+            context = {'error': 'Username or Password is incorrect'}
+            return render(req, 'login.html', context)
+
+    return render(req, 'login.html')
+
 
 def logout_User(req):
     logout(req)
     return redirect('login')
 
+
 def register(req):
     if req.user.is_authenticated:
         return redirect('home')
-    else:
-        form = CreateUserForm()
-        if req.method == 'POST':
-            form = CreateUserForm(req.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('login')
 
-        context = {'form':form}
-        return render(req,'register.html',context)
-#
+    form = CreateUserForm()
+    if req.method == 'POST':
+        form = CreateUserForm(req.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+
+    context = {'form': form}
+    return render(req, 'register.html', context)
+
+
 # @login_required(login_url='login')
 def home(req):
-    context ={}
-    return render(req,'index.html',context)
+    context = {}
+    return render(req, 'index.html', context)
 
-# @login_required(login_url='login')
+
 def products(req):
     query = req.GET.get('q', '').strip()
+    query_select = req.GET.getlist('qs')
     products = Product.objects.all()
+    categories = Product.CATEGORY
 
     if query:
-        products = products.filter(
-            Q(name__icontains=query) |
-            Q(category__icontains=query)  # If category is a ForeignKey
-        )
-    context = {'products':products}
-    return render(req,'products.html',context)
+        products = products.filter(Q(name__icontains=query) | Q(category__icontains=query))
+
+    if query_select:
+        products = products.filter(category__in=query_select)
+
+    pagination = Paginator(products, 8)
+    page = req.GET.get('page')
+    pageFinal = pagination.get_page(page)
+
+    context = {
+        'products': pageFinal,  # Paginated products
+        'categories': categories,
+        'selected_qs': query_select,
+        'request': req,
+        'pageFinal': pageFinal,
+    }
+
+    if req.headers.get('x-requested-with') == 'XMLHttpRequest':
+        django_engine = engines['django']
+        html_template = """
+        {% for product in products %}
+          <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="product-card">
+              <a href="{% url 'product_details' product.id %}">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+              </a>
+              <div class="product-name">{{ product.name }}</div>
+              <div class="product-price">${{ product.price }}</div>
+              <div class="text-muted">Stock: {{ product.stock }}</div>
+              {% if request.user.is_authenticated and not request.user.is_superuser %}
+                <a href="{% url 'add_to_cart' product.id %}" class="btn btn-warning">Add to Cart</a>
+              {% elif not request.user.is_authenticated %}
+                <a href="{% url 'login' %}?next={% url 'add_to_cart' product.id %}" class="btn btn-warning">Add to Cart</a>
+              {% endif %}
+            </div>
+          </div>
+        {% empty %}
+          <p class="text-center">No products available.</p>
+        {% endfor %}
+        """
+        template = django_engine.from_string(html_template)
+        html = template.render(context)
+        return HttpResponse(html)
+
+    return render(req, 'products.html', context)
+
 
 @login_required(login_url='login')
 def adminviewpage(req):
-    context={}
-    return render(req,'admin_page.html',context)
+    context = {}
+    return render(req, 'admin_page.html', context)
+
 
 @login_required(login_url='login')
 def manageProduct(req):
     products = Product.objects.all()
     categories = Product.CATEGORY
 
-    # Individual filters
-    name_query = req.GET.get('name', '').strip()
-    category_query = req.GET.get('category', '').strip()
-    price_query = req.GET.get('price', '').strip()
     q = req.GET.get('q', '').strip()
-
-    # Apply filters
-    if name_query:
-        products = products.filter(name__icontains=name_query)
-
-    if category_query:
-        products = products.filter(category__icontains=category_query)  # if category is a CharField
-
-    if price_query:
-        try:
-            products = products.filter(price__lte=float(price_query))
-        except ValueError:
-            pass
-
-    # General search box
     if q:
-        products = products.filter(
-            Q(name__icontains=q) |
-            Q(category__icontains=q)
-        )
+        products = products.filter(Q(name__icontains=q) | Q(category__icontains=q))
+
+    pagination = Paginator(products, 5)
+    page = req.GET.get('page')
+    pageFinal = pagination.get_page(page)
+
+    if req.headers.get('x-requested-with') == 'XMLHttpRequest':
+        rows_html = render_to_string('product_rows.html', {'products': pageFinal.object_list})
+        pagination_html = render_to_string('pagination.html', {'pageFinal': pageFinal, 'q': q})
+        return JsonResponse({'rows_html': rows_html, 'pagination_html': pagination_html})
 
     context = {
-        'products': products,
+        'products': pageFinal.object_list,
         'categories': categories,
-        'selected_category': category_query,
-        'request': req
+        'request': req,
+        'pageFinal': pageFinal
     }
     return render(req, 'manage_product.html', context)
+
 
 @login_required(login_url='login')
 def add_product(request):
@@ -121,29 +157,29 @@ def add_product(request):
         form = ProductForm()
     return render(request, 'add_product.html', {'form': form})
 
-def delete_product(req,id):
+
+def delete_product(req, id):
     if req.method == 'POST':
         product = get_object_or_404(Product, id=id)
         product.delete()
         return redirect('manage_product')
-
     return redirect('manage_product')
 
-def edit_product(request ,id):
+
+def edit_product(request, id):
     product = get_object_or_404(Product, id=id)
 
     if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES, instance=product)  # Important: include request.FILES!
+        form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             form.save()
-            return redirect('manage_product')  # Or your product list URL name
+            return redirect('manage_product')
     else:
         form = ProductForm(instance=product)
 
-    context = {
-        'form': form
-    }
-    return render(request,'edit_product.html',context)
+    context = {'form': form}
+    return render(request, 'edit_product.html', context)
+
 
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -156,8 +192,6 @@ def add_to_cart(request, product_id):
 
     return redirect('show_cart')
 
-from django.shortcuts import render
-from .models import Cart
 
 def show_cart(request):
     cart = Cart.objects.filter(user=request.user).first()
@@ -169,11 +203,13 @@ def show_cart(request):
         total = cart.total_price()
     return render(request, 'cart.html', {'cart_items': cart_items, 'total': total})
 
+
 def increase_quantity(request, item_id):
     item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
     item.quantity += 1
     item.save()
     return redirect('show_cart')
+
 
 def decrease_quantity(request, item_id):
     item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
@@ -184,13 +220,42 @@ def decrease_quantity(request, item_id):
         item.delete()
     return redirect('show_cart')
 
+
 def remove_cart_item(request, item_id):
     item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
     item.delete()
     return redirect('show_cart')
 
-def product_detail(request,id):
-    product_data = Product.objects.get(id=id)
 
-    context = {'product_data':product_data}
-    return render(request,'product_details.html',context)
+def product_detail(request, id):
+    product_data = get_object_or_404(Product, id=id)
+    context = {'product_data': product_data}
+    return render(request, 'product_details.html', context)
+
+def manage_user(request):
+    users = User.objects.all()
+    context = {'users': users}
+    # Normal full page load
+    return render(request, 'manage_user.html', context)
+
+def update_user(request,id):
+    current_user = User.objects.get(id = id)
+
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+
+        # You can add validations here
+        current_user.username = username
+        current_user.email = email
+        current_user.save()
+
+        return redirect('manage_user')  # Go back to user list
+
+    context = {'current_user':current_user}
+    return render(request,'user_edit.html',context)
+
+def delete_user(request,id):
+    cur_user = get_object_or_404(User,id=id)
+    cur_user.delete()
+    return redirect('manage_user')

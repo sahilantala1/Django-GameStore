@@ -1,0 +1,26 @@
+{% extends 'base_a.html' %}
+{% load static %}
+{% block start %}
+{% include 'navbar.html' %}
+
+   <div class="container my-5 text-white">
+  <h2>Edit User</h2>
+
+  <form method="POST" class="mt-4">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="username" class="form-label">Username</label>
+      <input type="text" name="username" class="form-control" value="{{ current_user.username }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" name="email" class="form-control" value="{{ current_user.email }}" required>
+    </div>
+
+    <button type="submit" class="btn btn-success">Update</button>
+    <a href="{% url 'manage_user' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+
+{% endblock %}

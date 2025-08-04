@@ -13,3 +13,8 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'price', 'stock', 'category', 'image']
+
+class ManageUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = '__all__'

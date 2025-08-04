@@ -1,0 +1,23 @@
+<div class="custom-pagination">
+  {% with q as q %}
+    {% if pageFinal.has_previous %}
+      <a href="?page={{ pageFinal.previous_page_number }}{% if q %}&q={{ q }}{% endif %}" class="pagination-arrow">&lt;</a>
+    {% endif %}
+
+    {% for num in pageFinal.paginator.page_range %}
+      {% if num == pageFinal.number %}
+        <a href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}" class="pagination-page active">{{ num }}</a>
+      {% elif num >= pageFinal.number|add:"-2" and num <= pageFinal.number|add:"2" %}
+        <a href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}" class="pagination-page">{{ num }}</a>
+      {% elif num == 1 or num == pageFinal.paginator.num_pages %}
+        <a href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}" class="pagination-page">{{ num }}</a>
+      {% elif num == pageFinal.number|add:"-3" or num == pageFinal.number|add:"3" %}
+        <span class="pagination-dots">...</span>
+      {% endif %}
+    {% endfor %}
+
+    {% if pageFinal.has_next %}
+      <a href="?page={{ pageFinal.next_page_number }}{% if q %}&q={{ q }}{% endif %}" class="pagination-arrow">&gt;</a>
+    {% endif %}
+  {% endwith %}
+</div>

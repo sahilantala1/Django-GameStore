@@ -3,113 +3,323 @@
 {% block start %}
 {% include 'navbar.html' %}
 
+<!-- =======================
+    Custom Styles
+========================== -->
 <style>
-  .products-container {
-    padding: 30px;
+    body {
+      background: #000;
+      color: #fff;
+    }
+
+    .products-container {
+      width: 100%;
+    }
+
+    .products-title {
+      text-align: center;
+      text-transform: uppercase;
+      font-weight: bold;
+      margin-bottom: 30px;
+      color: #fff;
+    }
+
+    .product-card {
+      background-color: #111;
+      border: 1px solid #fff;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: 100%;
+    }
+
+    .product-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+    }
+
+    .product-img {
+      width: 100%;
+      height: 180px;
+      object-fit: contain;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      padding: 10px;
+      transition: box-shadow 0.4s ease, background-color 0.4s ease;
+    }
+
+    .product-name {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .product-price {
+      color: #28a745;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .sidebar {
+      background-color: #1a1a1a;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .sidebar h6 {
+      font-size: 14px;
+      color: #ccc;
+      text-transform: uppercase;
+      margin: 20px 0 10px;
+    }
+
+    .form-check-label {
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .highlight-red {
+      color: red;
+    }
+
+    .btn-reset {
+      background-color: #333;
+      color: #fff;
+      width: 100%;
+      border: none;
+      padding: 6px 0;
+      margin-top: 20px;
+    }
+
+    .btn-reset:hover {
+      background-color: #444;
+    }
+
+    .product-category {
+      padding-top: 20px;
+      border-top: 1px solid #333;
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    .form-check {
+      margin-bottom: 8px;
+    }
+
+    .search-form {
+      margin: 20px 0;
+    }
+
+    .search-form input,
+    .search-form .btn {
+      border-radius: 0;
+    }
+
+    .pagination a:hover {
+      background-color: red !important;
+      color: white !important;
+    }
+    .custom-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px auto;
+    padding: 15px 30px;
+    background-color: #fceeee;
+    border-radius: 40px;
+    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.15);
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
-  .products-title {
-    text-align: center;
-    text-transform: uppercase;
+  .pagination-page,
+  .pagination-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    background-color: white;
+    color: red;
+    border-radius: 50%;
+    text-decoration: none;
     font-weight: bold;
-    margin-bottom: 40px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(255, 0, 0, 0.15);
+    border: none;
   }
 
-  .product-card {
-    background-color: #111;
-    border: 1px solid #444;
-    border-radius: 10px;
-    padding: 15px;
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 100%;
-    color: #fff;
+  .pagination-page.active {
+    background-color: red;
+    color: white;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   }
 
-  .product-card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+  .pagination-page:hover,
+  .pagination-arrow:hover {
+    background-color: red;
+    color: white;
   }
 
-  .product-img {
-    width: 100%;
-    height: 180px;
-    object-fit: contain;
-    margin-bottom: 10px;
-    background-color: #222;
-    border-radius: 8px;
-    transition: box-shadow 0.4s ease;
-    padding: 10px;
-  }
-
-  .product-card:hover .product-img {
-    box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
-    background-color: #000;
-  }
-
-  .product-name {
+  .pagination-dots {
+    color: red;
     font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 5px;
-    color: #fff;
-  }
-
-  .product-price {
-    color: #28a745;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-
-  .text-muted {
-    color: #ccc !important;
-  }
-
-  .btn-warning {
-    color: #000;
-    font-weight: bold;
+    padding: 0 6px;
   }
 </style>
 
+<!-- =======================
+    Product Section
+========================== -->
+<div class="products-container">
+    <div class="container">
+        <h2 class="products-title">Our Products</h2>
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <aside class="sidebar">
+                    <!-- Category Filters -->
+                    <h6>Gaming Series</h6>
+                    <form id="category-filter-form" method="get">
+                        {% for label, cat in categories %}
+                        <div class="form-check">
+                            <input %}
+                                   %}checked{%
+                                   cat
+                                   class="form-check-input category-checkbox"
+                                   endif
+                                   id="{{ label|slugify }}" if in name="qs" selected_qs type="checkbox" value="{{ cat }}" {%>
+                            <label class="form-check-label" for="{{ label|slugify }}">
+                                {{ label }}
+                            </label>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted">No categories found.</p>
+                        {% endfor %}
+                    </form>
+                    <!-- Static Recommendations -->
+                    <h6>Recommendations</h6>
+                    <div class="form-check">
+                        <label class="form-check-label highlight-red">✓ Verified</label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label highlight-red">★ Design Award</label>
+                    </div>
+                    <!-- Reset Button -->
+                    <button class="btn btn-reset" id="reset-filters" type="button">Reset</button>
+                    <!-- Additional Info -->
+                    <div class="product-category">
+                        <strong>Product Category</strong><br>
+                        - Gaming & Creation<br>
+                        - Business & Productivity
+                    </div>
+                </aside>
+            </div>
+            <!-- Main Product Area -->
+            <div class="col-md-9">
+                <!-- Search Form -->
+                <form class="search-form" id="search-form" method="GET">
+                    <div class="input-group">
+                        <input class="form-control" id="search-input" name="q" placeholder="Search by name or category..."
+                               type="text" value="{{ request.GET.q }}">
+                        <button class="btn btn-dark" type="submit">Search</button>
+                    </div>
+                </form>
+                <!-- Product Grid -->
+                <div class="product-show row g-4" id="product-show">
+                    {% block product_grid %}
+                    {% for product in products %}
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="product-card">
+                            <a href="{% url 'product_details' product.id %}">
+                                <img alt="{{ product.name }}" class="product-img" src="{{ product.image.url }}">
+                            </a>
+                            <div class="product-name">{{ product.name }}</div>
+                            <div class="product-price">${{ product.price }}</div>
+                            <div class="text-muted">Stock: {{ product.stock }}</div>
 
-<div class="container products-container">
-  <h2 class="products-title">Our Products</h2>
+                            {% if request.user.is_authenticated and not request.user.is_superuser %}
+                            <a class="btn btn-warning" href="{% url 'add_to_cart' product.id %}">Add to Cart</a>
+                            {% elif not request.user.is_authenticated %}
+                            <a class="btn btn-warning" href="{% url 'login' %}?next={% url 'add_to_cart' product.id %}">Add
+                                to Cart</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-center">No products available.</p>
+                    {% endfor %}
+                    {% endblock %}
+                </div>
+                <div class="custom-pagination">
+                    {% if pageFinal.has_previous %}
+                    <a class="pagination-arrow" href="?page={{ pageFinal.previous_page_number }}">&lt;</a>
+                    {% endif %}
 
-  <!-- 🔍 Search Form -->
-  <form method="GET" class="mb-4">
-    <div class="input-group">
-      <input type="text" name="q" class="form-control" placeholder="Search by name or category..." value="{{ request.GET.q }}">
-      <button type="submit" class="btn btn-dark">Search</button>
-    </div>
-  </form>
+                    {% for num in pageFinal.paginator.page_range %}
+                    {% if num == pageFinal.number %}
+                    <a class="pagination-page active" href="?page={{ num }}">{{ num }}</a>
+                    {% elif num >= pageFinal.number|add:"-2" and num <= pageFinal.number|add:"2" %}
+                    <a class="pagination-page" href="?page={{ num }}">{{ num }}</a>
+                    {% elif num == 1 or num == pageFinal.paginator.num_pages %}
+                    <a class="pagination-page" href="?page={{ num }}">{{ num }}</a>
+                    {% elif num == pageFinal.number|add:"-3" or num == pageFinal.number|add:"3" %}
+                    <span class="pagination-dots">...</span>
+                    {% endif %}
+                    {% endfor %}
 
-  <div class="row g-4">
-    {% for product in products %}
-      <div class="col-sm-6 col-md-4 col-lg-3">
-        <div class="product-card">
-  <a href="{% url 'product_details' product.id %}">
-          <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
-    </a>
-          <div class="product-name">{{ product.name }}</div>
-          <div class="product-price">${{ product.price }}</div>
-          <div class="text-muted">Stock: {{ product.stock }}</div>
-          {% if request.user.is_authenticated %}
-  {% if not request.user.is_superuser %}
-    <a href="{% url 'add_to_cart' product.id %}" class="btn btn-warning">Add to Cart</a>
-  {% endif %}
-{% else %}
-  <a href="{% url 'login' %}?next={% url 'add_to_cart' product.id %}" class="btn btn-warning">Add to Cart</a>
-{% endif %}
-
+                    {% if pageFinal.has_next %}
+                    <a class="pagination-arrow" href="?page={{ pageFinal.next_page_number }}">&gt;</a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-      </div>
-    {% empty %}
-      <p class="text-center">No products available.</p>
-    {% endfor %}
-  </div>
+    </div>
 </div>
 
+<!-- =======================
+    Scripts
+========================== -->
+<script>
+    function fetchProducts(params) {
+      const url = `/products/?${params}`;
+      fetch(url, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('product-show').innerHTML = html;
+      });
+    }
 
+    // Category filter handler
+    document.querySelectorAll('.category-checkbox').forEach(cb => {
+      cb.addEventListener('change', function () {
+        const selected = Array.from(document.querySelectorAll('.category-checkbox:checked'))
+                              .map(el => `qs=${encodeURIComponent(el.value)}`);
+        const searchQuery = document.getElementById('search-input').value.trim();
+        if (searchQuery) selected.push(`q=${encodeURIComponent(searchQuery)}`);
+        fetchProducts(selected.join('&'));
+      });
+    });
+
+    // Search form handler
+    document.getElementById('search-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const searchQuery = document.getElementById('search-input').value.trim();
+      const selectedCategories = Array.from(document.querySelectorAll('.category-checkbox:checked'))
+                                      .map(el => `qs=${encodeURIComponent(el.value)}`);
+      if (searchQuery) selectedCategories.push(`q=${encodeURIComponent(searchQuery)}`);
+      fetchProducts(selectedCategories.join('&'));
+    });
+
+    // Reset filters
+    document.getElementById('reset-filters').addEventListener('click', function () {
+      document.querySelectorAll('.category-checkbox').forEach(cb => cb.checked = false);
+      document.getElementById('search-input').value = '';
+      fetchProducts('');
+    });
+</script>
 
 {% endblock %}
-
-

@@ -20,4 +20,7 @@ urlpatterns = [
     path('cart/decrease/<int:item_id>/', views.decrease_quantity, name='decrease_quantity'),
     path('cart/remove/<int:item_id>/', views.remove_cart_item, name='remove_cart_item'),
     path('product_details/<int:id>', views.product_detail, name='product_details'),
+    path('manage_user/', views.manage_user, name='manage_user'),
+    path('user_edit/<int:id>', views.update_user, name='user_edit'),
+    path('delete_user/<int:id>', views.delete_user, name='delete_user'),
 ]

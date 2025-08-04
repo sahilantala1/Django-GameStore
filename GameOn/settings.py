@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,7 +40,7 @@ INSTALLED_APPS = [
 
 EXTERNAL_APPS = [
     'LiveGameStore',
-    'widget_tweaks'
+    'widget_tweaks',
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS

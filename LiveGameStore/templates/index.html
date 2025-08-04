@@ -39,6 +39,10 @@
     width:100%;
     height:100%;
   }
+  .bottom-poster img{
+    height:390px;
+    width:auto;
+  }
 </style>
 
 <!-- Main Bootstrap Carousel -->
@@ -55,31 +59,31 @@
   <!-- Slides -->
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <img src="{% static 'images/monitor.webp' %}" class="d-block w-100" alt="Slide 1">
+      <img src="{% static 'images/Poster/poster_5.jpeg' %}" class="d-block w-100" alt="Slide 1">
     </div>
     <div class="carousel-item">
-      <img src="{% static 'images/fwebp.webp' %}" class="d-block w-100" alt="Slide 2">
+      <img src="{% static 'images/Poster/poster_6.jpeg' %}" class="d-block w-100" alt="Slide 2">
     </div>
     <div class="carousel-item">
-      <img src="{% static 'images/images.webp' %}" class="d-block w-100" alt="Slide 3">
+      <img src="{% static 'images/Poster/poster_9.jpeg' %}" class="d-block w-100" alt="Slide 5">
     </div>
     <div class="carousel-item">
-      <img src="{% static 'images/asus3.webp' %}" class="d-block w-100" alt="Slide 4">
+      <img src="{% static 'images/Poster/poster_7.jpeg' %}" class="d-block w-100" alt="Slide 3">
     </div>
     <div class="carousel-item">
-      <img src="{% static 'images/asus_laptop.webp' %}" class="d-block w-100" alt="Slide 5">
+      <img src="{% static 'images/Poster/poster_8.jpeg' %}" class="d-block w-100" alt="Slide 4">
     </div>
   </div>
 
   <!-- Controls -->
-  <button class="carousel-control-prev" type="button" data-bs-target="#rogCarousel" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#rogCarousel" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
+<!--  <button class="carousel-control-prev" type="button" data-bs-target="#rogCarousel" data-bs-slide="prev">-->
+<!--    <span class="carousel-control-prev-icon" aria-hidden="true"></span>-->
+<!--    <span class="visually-hidden">Previous</span>-->
+<!--  </button>-->
+<!--  <button class="carousel-control-next" type="button" data-bs-target="#rogCarousel" data-bs-slide="next">-->
+<!--    <span class="carousel-control-next-icon" aria-hidden="true"></span>-->
+<!--    <span class="visually-hidden">Next</span>-->
+<!--  </button>-->
 </div>
 
 <!-- Explore Our Products Slider -->
@@ -105,20 +109,23 @@
         </div>
       </div>
     </div>
+    <div class="bottom-poster mt-5">
+      <img src="{% static 'images/Poster/poster_bottom.jpeg' %}">
+    </div>
 
     <!-- Controls -->
-    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
+<!--    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">-->
+<!--      <span class="carousel-control-prev-icon" aria-hidden="true"></span>-->
+<!--      <span class="visually-hidden">Previous</span>-->
+<!--    </button>-->
+<!--    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">-->
+<!--      <span class="carousel-control-next-icon" aria-hidden="true"></span>-->
+<!--      <span class="visually-hidden">Next</span>-->
+<!--    </button>-->
   </div>
 </div>
 
 <div class="my-5">
-    <img class="footer_img" src="{% static 'images/last.jpg' %}">
+    <img class="footer_img" src="{% static 'images/Poster/poster_3.webp' %}">
 </div>
 {% endblock %}

@@ -1,0 +1,27 @@
+{% for product in products %}
+<tr>
+  <td>{{ forloop.counter }}</td>
+  <td>
+    {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img" />
+    {% else %}
+      <span>No Image</span>
+    {% endif %}
+  </td>
+  <td>{{ product.name }}</td>
+  <td>${{ product.price }}</td>
+  <td>{{ product.stock }}</td>
+  <td>{{ product.category }}</td>
+  <td>
+    <a class="btn btn-primary btn-sm" href="{% url 'edit_product' product.id %}">Edit</a>
+    <button class="btn btn-danger btn-sm" onclick="confirmDelete({{ product.id }})">Delete</button>
+    <form id="delete-form-{{ product.id }}" method="POST" action="{% url 'delete_product' product.id %}" style="display: none">
+      {% csrf_token %}
+    </form>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <td colspan="7" class="text-center">No products found.</td>
+</tr>
+{% endfor %}
