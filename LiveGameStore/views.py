@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
-from django.http import HttpResponse, JsonResponse
+from django.contrib import messages
+from django.http import HttpResponse, JsonResponse, HttpResponseNotAllowed
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -8,7 +9,7 @@ from django.db.models import Q
 from django.template import engines
 from django.template.loader import render_to_string
 
-from .models import Product, Cart, CartItem
+from .models import Product, Cart, CartItem, Order
 from .forms import CreateUserForm, ProductForm
 
 
@@ -152,16 +153,18 @@ def add_product(request):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Product added successfully.')
             return redirect('add_product')
     else:
         form = ProductForm()
     return render(request, 'add_product.html', {'form': form})
 
 
-def delete_product(req, id):
-    if req.method == 'POST':
+def delete_product(request, id):
+    if request.method == 'POST':
         product = get_object_or_404(Product, id=id)
         product.delete()
+        messages.success(request, 'Product deleted successfully.')
         return redirect('manage_product')
     return redirect('manage_product')
 
@@ -173,36 +176,13 @@ def edit_product(request, id):
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             form.save()
-            return redirect('manage_product')
+            messages.success(request, 'Product updated successfully!')
+            return redirect('manage_product')  # Redirect back to edit page to show message
     else:
         form = ProductForm(instance=product)
 
     context = {'form': form}
     return render(request, 'edit_product.html', context)
-
-
-def add_to_cart(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    cart, created = Cart.objects.get_or_create(user=request.user)
-
-    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
-    if not created:
-        cart_item.quantity += 1
-        cart_item.save()
-
-    return redirect('show_cart')
-
-
-def show_cart(request):
-    cart = Cart.objects.filter(user=request.user).first()
-    if not cart:
-        cart_items = []
-        total = 0
-    else:
-        cart_items = cart.items.all()
-        total = cart.total_price()
-    return render(request, 'cart.html', {'cart_items': cart_items, 'total': total})
-
 
 def increase_quantity(request, item_id):
     item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
@@ -220,6 +200,16 @@ def decrease_quantity(request, item_id):
         item.delete()
     return redirect('show_cart')
 
+
+def show_cart(request):
+    cart = Cart.objects.filter(user=request.user).first()
+    if not cart:
+        cart_items = []
+        total = 0
+    else:
+        cart_items = cart.items.all()
+        total = cart.total_price()
+    return render(request, 'cart.html', {'cart_items': cart_items, 'total': total})
 
 def remove_cart_item(request, item_id):
     item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
@@ -256,6 +246,51 @@ def update_user(request,id):
     return render(request,'user_edit.html',context)
 
 def delete_user(request,id):
-    cur_user = get_object_or_404(User,id=id)
-    cur_user.delete()
-    return redirect('manage_user')
+    if request.method == "POST":
+        user = get_object_or_404(User, id=id)
+        user.delete()
+        return redirect('manage_user')
+    return HttpResponseNotAllowed(['POST'])
+
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    cart, created = Cart.objects.get_or_create(user=request.user)
+
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+
+    return redirect('show_cart')
+
+@login_required
+def checkout(request):
+    cart = Cart.objects.filter(user=request.user).first()
+
+    if not cart or cart.items.count() == 0:
+        messages.error(request, "Your cart is empty.")
+        return redirect('show_cart')
+
+    for item in cart.items.all():
+        Order.objects.create(
+            user=request.user,
+            product=item.product,
+            image=item.product.image,
+            quantity=item.quantity,
+            price=item.total_price(),
+            email=request.user.email
+        )
+    # Clear the cart
+    cart.items.all().delete()
+
+    messages.success(request, "Order placed successfully.")
+    return redirect('product')  # Or to a new "order success" page
+
+@login_required
+def manage_orders(request):
+    # Fetch all orders, you can filter by user if needed:
+    orders = Order.objects.all()
+    context = {
+        'orders': orders,
+    }
+    return render(request,'order_show.html', context)

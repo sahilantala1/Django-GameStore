@@ -48,13 +48,32 @@
         <div class="text-danger small">{{ form.image.errors }}</div>
       {% endif %}
       {% if form.instance.image %}
-  <img src="{{ form.instance.image.url }}" alt="Current Image" class="img-thumbnail mt-2" style="max-height:150px;">
-{% endif %}
-
+        <img src="{{ form.instance.image.url }}" alt="Current Image" class="img-thumbnail mt-2" style="max-height:150px;">
+      {% endif %}
     </div>
 
     <button type="submit" class="btn btn-primary w-100">Update Product</button>
   </form>
 </div>
+
+<!-- Include SweetAlert CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- SweetAlert success message -->
+{% if messages %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    {% for message in messages %}
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: '{{ message|escapejs }}',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    {% endfor %}
+  });
+</script>
+{% endif %}
 
 {% endblock %}

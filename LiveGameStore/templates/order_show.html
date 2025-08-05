@@ -1,0 +1,32 @@
+{% extends 'base_a.html' %}
+{% block start %}
+<h2>Your Orders</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Image</th>
+      <th>Product</th>
+      <th>Quantity</th>
+      <th>Total Price</th>
+      <th>Date</th>
+      <th>Email</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in orders %}
+    <tr>
+      <td><img src="{{ order.image.url }}" width="50"></td>
+      <td>{{ order.product.name }}</td>
+      <td>{{ order.quantity }}</td>
+      <td>€{{ order.price }}</td>
+      <td>{{ order.date }}</td>
+      <td>{{ order.email}}</td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="5" class="text-center">No orders yet.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
