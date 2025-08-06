@@ -1,3 +1,5 @@
+from itertools import count
+
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse, HttpResponseNotAllowed
@@ -121,19 +123,31 @@ def adminviewpage(req):
 
 
 @login_required(login_url='login')
-def manageProduct(req):
+def manageProduct(request):
     products = Product.objects.all()
-    categories = Product.CATEGORY
+    categories = Product.CATEGORY  # [('Laptop', 'Laptop'), ('Monitor', 'Monitor'), ...]
 
-    q = req.GET.get('q', '').strip()
+    q = request.GET.get('q', '').strip()
+    selected_qs = request.GET.getlist('qs')
+    category_filter = request.GET.get('category')
+
+    # Combine filters if applicable
     if q:
         products = products.filter(Q(name__icontains=q) | Q(category__icontains=q))
 
-    pagination = Paginator(products, 5)
-    page = req.GET.get('page')
-    pageFinal = pagination.get_page(page)
+    if category_filter:
+        selected_qs.append(category_filter)
 
-    if req.headers.get('x-requested-with') == 'XMLHttpRequest':
+    if selected_qs:
+        products = products.filter(category__in=selected_qs)
+
+    # Pagination after filtering
+    paginator = Paginator(products, 5)
+    page = request.GET.get('page')
+    pageFinal = paginator.get_page(page)
+
+    # AJAX response
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         rows_html = render_to_string('product_rows.html', {'products': pageFinal.object_list})
         pagination_html = render_to_string('pagination.html', {'pageFinal': pageFinal, 'q': q})
         return JsonResponse({'rows_html': rows_html, 'pagination_html': pagination_html})
@@ -141,10 +155,11 @@ def manageProduct(req):
     context = {
         'products': pageFinal.object_list,
         'categories': categories,
-        'request': req,
-        'pageFinal': pageFinal
+        'pageFinal': pageFinal,
+        'selected_qs': selected_qs,
     }
-    return render(req, 'manage_product.html', context)
+
+    return render(request, 'manage_product.html', context)
 
 
 @login_required(login_url='login')
@@ -215,7 +230,6 @@ def remove_cart_item(request, item_id):
     item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
     item.delete()
     return redirect('show_cart')
-
 
 def product_detail(request, id):
     product_data = get_object_or_404(Product, id=id)
@@ -288,9 +302,15 @@ def checkout(request):
 
 @login_required
 def manage_orders(request):
-    # Fetch all orders, you can filter by user if needed:
     orders = Order.objects.all()
+
+    # Calculate total revenue of ALL orders
+    total_rev = sum(order.price for order in orders)
+    total_customer = orders.values('user_id').distinct().count()
+
     context = {
         'orders': orders,
+        'total_rev': total_rev,
+        'total_customer':total_customer
     }
-    return render(request,'order_show.html', context)
+    return render(request, 'order_show.html', context)

@@ -168,7 +168,6 @@
     padding: 0 6px;
   }
 </style>
-
 <!-- =======================
     Product Section
 ========================== -->
@@ -183,20 +182,23 @@
                     <h6>Gaming Series</h6>
                     <form id="category-filter-form" method="get">
                         {% for label, cat in categories %}
-                        <div class="form-check">
-                            <input %}
-                                   %}checked{%
-                                   cat
-                                   class="form-check-input category-checkbox"
-                                   endif
-                                   id="{{ label|slugify }}" if in name="qs" selected_qs type="checkbox" value="{{ cat }}" {%>
-                            <label class="form-check-label" for="{{ label|slugify }}">
-                                {{ label }}
-                            </label>
-                        </div>
-                        {% empty %}
-                        <p class="text-muted">No categories found.</p>
-                        {% endfor %}
+  <div class="form-check">
+    <input
+      type="checkbox"
+      class="form-check-input category-checkbox"
+      id="{{ label|slugify }}"
+      name="qs"
+      value="{{ cat }}"
+      {% if cat in selected_qs %}checked{% endif %}
+    >
+    <label class="form-check-label" for="{{ label|slugify }}">
+      {{ label }}
+    </label>
+  </div>
+{% empty %}
+  <p class="text-muted">No categories found.</p>
+{% endfor %}
+
                     </form>
                     <!-- Static Recommendations -->
                     <h6>Recommendations</h6>
@@ -282,6 +284,19 @@
     Scripts
 ========================== -->
 <script>
+     document.addEventListener("DOMContentLoaded", function () {
+    const categoryParam = new URLSearchParams(window.location.search).get("category");
+    if (categoryParam) {
+      const checkbox = Array.from(document.querySelectorAll('.category-checkbox'))
+        .find(cb => cb.value.toLowerCase() === categoryParam.toLowerCase());
+
+      if (checkbox) {
+        checkbox.checked = true;
+        checkbox.dispatchEvent(new Event('change'));
+      }
+    }
+  });
+
     function fetchProducts(params) {
       const url = `/products/?${params}`;
       fetch(url, {

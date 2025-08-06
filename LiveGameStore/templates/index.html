@@ -4,29 +4,11 @@
 {% include 'navbar.html' %}
 
 <style>
+  /* Carousel Styles */
   .carousel-item img {
-    height: 650px;
+    width: 100%;
+    height: auto;
     object-fit: cover;
-  }
-
-  /* Explore Our Products Styles */
-  .product-carousel img {
-    width: 400px;
-    height: 160px;
-    object-fit: contain;
-    transition: transform 0.3s ease;
-  }
-
-  .product-carousel img:hover {
-    transform: scale(1.05);
-  }
-
-  .product-title {
-    font-weight: bold;
-    letter-spacing: 1px;
-    margin-bottom: 30px;
-    text-align: center;
-    text-transform: uppercase;
   }
 
   .carousel-control-prev-icon,
@@ -35,19 +17,165 @@
     border-radius: 50%;
     padding: 15px;
   }
-  .footer_img{
-    width:100%;
-    height:100%;
+
+  /* Product Section */
+  .product-section {
+    background-color: #000;
+    padding: 40px 0;
+    color: white;
   }
-  .bottom-poster img{
-    height:390px;
-    width:auto;
+
+  .product-title {
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+    text-align: center;
+    text-transform: uppercase;
+    color: white;
   }
+
+  .shop_by_collection-row {
+    display: flex;
+    overflow-x: auto;
+    gap: 2rem;
+    padding: 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: #bbb transparent;
+  }
+
+  .shop_by_collection-row::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .shop_by_collection-row::-webkit-scrollbar-thumb {
+    background-color: #bbb;
+    border-radius: 4px;
+  }
+
+  .shop_by_collection-row::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .single_column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 140px;
+    min-width: 120px;
+  }
+
+  .product-img {
+    max-height: 150px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+
+  .product-img:hover {
+    transform: scale(1.05);
+  }
+
+  /* Mid and Footer poster styles */
+  .footer_img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 576px) {
+    .single_column {
+      max-width: 100px;
+      min-width: 90px;
+    }
+
+    .product-img {
+      max-height: 100px;
+    }
+
+    .product-title {
+      font-size: 1.2rem;
+    }
+  }
+
+  .product-section {
+  background-color: #000;
+  padding: 40px 0;
+}
+
+.product-title {
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-bottom: 30px;
+  text-align: center;
+  text-transform: uppercase;
+  color: white;
+}
+
+.product-slider {
+  display: flex;
+  gap: 2rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: #bbb transparent;
+}
+
+.product-slider::-webkit-scrollbar {
+  height: 8px;
+}
+
+.product-slider::-webkit-scrollbar-thumb {
+  background-color: #bbb;
+  border-radius: 4px;
+}
+
+.product-slide {
+  flex: 0 0 auto;
+  text-align: center;
+  max-width: 140px;
+  min-width: 120px;
+}
+
+.product-img {
+  max-height: 150px;
+  width: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.product-img:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive for mobile */
+@media (max-width: 576px) {
+  .product-slide {
+    max-width: 100px;
+    min-width: 90px;
+  }
+
+  .product-img {
+    max-height: 100px;
+  }
+
+  .product-title {
+    font-size: 1.2rem;
+  }
+ }
+  .img-product{
+     height:130px;
+   }
+
 </style>
 
 <!-- Main Bootstrap Carousel -->
 <div id="rogCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
-  <!-- Indicators -->
   <div class="carousel-indicators">
     <button type="button" data-bs-target="#rogCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
     <button type="button" data-bs-target="#rogCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -56,7 +184,6 @@
     <button type="button" data-bs-target="#rogCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
   </div>
 
-  <!-- Slides -->
   <div class="carousel-inner">
     <div class="carousel-item active">
       <img src="{% static 'images/Poster/poster_5.jpeg' %}" class="d-block w-100" alt="Slide 1">
@@ -65,67 +192,94 @@
       <img src="{% static 'images/Poster/poster_6.jpeg' %}" class="d-block w-100" alt="Slide 2">
     </div>
     <div class="carousel-item">
-      <img src="{% static 'images/Poster/poster_9.jpeg' %}" class="d-block w-100" alt="Slide 5">
+      <img src="{% static 'images/Poster/poster_9.jpeg' %}" class="d-block w-100" alt="Slide 3">
     </div>
     <div class="carousel-item">
-      <img src="{% static 'images/Poster/poster_7.jpeg' %}" class="d-block w-100" alt="Slide 3">
+      <img src="{% static 'images/Poster/poster_7.jpeg' %}" class="d-block w-100" alt="Slide 4">
     </div>
     <div class="carousel-item">
-      <img src="{% static 'images/Poster/poster_8.jpeg' %}" class="d-block w-100" alt="Slide 4">
+      <img src="{% static 'images/Poster/poster_8.jpeg' %}" class="d-block w-100" alt="Slide 5">
     </div>
   </div>
 
-  <!-- Controls -->
 <!--  <button class="carousel-control-prev" type="button" data-bs-target="#rogCarousel" data-bs-slide="prev">-->
 <!--    <span class="carousel-control-prev-icon" aria-hidden="true"></span>-->
 <!--    <span class="visually-hidden">Previous</span>-->
 <!--  </button>-->
+
 <!--  <button class="carousel-control-next" type="button" data-bs-target="#rogCarousel" data-bs-slide="next">-->
 <!--    <span class="carousel-control-next-icon" aria-hidden="true"></span>-->
 <!--    <span class="visually-hidden">Next</span>-->
 <!--  </button>-->
 </div>
 
-<!-- Explore Our Products Slider -->
-<div class="product-carousel mt-5">
+<!-- Product Horizontal Scroll Section -->
+<!-- Product Horizontal Scroll Section -->
+<div class="product-section container text-center">
   <h3 class="product-title">Explore Our Products</h3>
 
-  <div id="productCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <div class="d-flex justify-content-center gap-4">
-          <img src="{% static 'images/laptop_1.jpg' %}" alt="Laptop">
-          <img src="{% static 'images/motherboard.png' %}" alt="Motherboard">
-          <img src="{% static 'images/grafic.jpg' %}" alt="Graphics">
-          <img src="{% static 'images/monitor.png' %}" alt="Monitor">
-        </div>
-      </div>
-      <div class="carousel-item">
-        <div class="d-flex justify-content-center gap-2">
-          <img src="{% static 'images/keyboard.jpg' %}" alt="Keyboard">
-          <img src="{% static 'images/mouse.png' %}" alt="Mouse">
-          <img src="{% static 'images/laptop_1.jpg' %}" alt="Laptop">
-          <img src="{% static 'images/monitor.png' %}" alt="Monitor">
-        </div>
-      </div>
-    </div>
-    <div class="bottom-poster mt-5">
-      <img src="{% static 'images/Poster/poster_bottom.jpeg' %}">
-    </div>
+  <div class="product-slider">
 
-    <!-- Controls -->
-<!--    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">-->
-<!--      <span class="carousel-control-prev-icon" aria-hidden="true"></span>-->
-<!--      <span class="visually-hidden">Previous</span>-->
-<!--    </button>-->
-<!--    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">-->
-<!--      <span class="carousel-control-next-icon" aria-hidden="true"></span>-->
-<!--      <span class="visually-hidden">Next</span>-->
-<!--    </button>-->
+    <a href="{% url 'product' %}?category=Laptop" class="product-slide text-decoration-none">
+      <div class="img-product">
+        <img src="{% static 'images/Daco_415667.png' %}" alt="Laptop" class="product-img" />
+      </div>
+      <div class="mt-2 fw-semibold text-white">Laptop</div>
+    </a>
+
+    <a href="{% url 'product' %}?category=Motherboard" class="product-slide text-decoration-none">
+      <div class="img-product">
+        <img src="{% static 'images/motherboard.png' %}" alt="Motherboard" class="product-img" />
+      </div>
+      <div class="mt-2 fw-semibold text-white">Motherboard</div>
+    </a>
+
+    <a href="{% url 'product' %}?category=Graphics Card" class="product-slide text-decoration-none">
+      <div class="img-product">
+        <img src="{% static 'images/grafic.png' %}" alt="Graphics Card" class="product-img" />
+      </div>
+      <div class="mt-2 fw-semibold text-white">Graphics Card</div>
+    </a>
+
+   <a href="{% url 'product' %}?category=Monitor" class="product-slide text-decoration-none">
+  <div class="img-product">
+    <img src="{% static 'images/monitor.png' %}" alt="Monitor" class="product-img" />
+  </div>
+  <div class="mt-2 fw-semibold text-white">Monitor</div>
+</a>
+
+    <a href="{% url 'product' %}?category=Mouse" class="product-slide text-decoration-none">
+      <div class="img-product">
+        <img src="{% static 'images/mouse.png' %}" alt="Mouse" class="product-img" />
+      </div>
+      <div class="mt-2 fw-semibold text-white">Mouse</div>
+    </a>
+
+    <a href="{% url 'product' %}?category=Keyboard" class="product-slide text-decoration-none">
+      <div class="img-product">
+        <img src="{% static 'images/Daco_5230181.png' %}" alt="Keyboard" class="product-img" />
+      </div>
+      <div class="mt-2 fw-semibold text-white">Keyboard</div>
+    </a>
+
+    <a href="{% url 'product' %}?category=PC Case" class="product-slide text-decoration-none">
+      <div class="img-product">
+        <img src="{% static 'images/asus_rog_hyperion_gr701__gronkh_5_top_of_the_top_14900_ks_96_-_8000_rtx_4090_3000px_4.png' %}" alt="Pc Case" class="product-img" />
+      </div>
+      <div class="mt-2 fw-semibold text-white">Pc Case</div>
+    </a>
+
   </div>
 </div>
 
-<div class="my-5">
-    <img class="footer_img" src="{% static 'images/Poster/poster_3.webp' %}">
+<!-- Mid Poster -->
+<div class="text-center mt-4">
+  <img src="{% static 'images/Poster/poster_mid.webp' %}" alt="Mid Poster" class="img-fluid w-100">
 </div>
+
+<!-- Footer Poster -->
+<div class="my-5">
+  <img class="footer_img" src="{% static 'images/Poster/poster_3.webp' %}" alt="Footer Poster">
+</div>
+
 {% endblock %}

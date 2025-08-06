@@ -10,6 +10,8 @@ class Product(models.Model):
         ('Keyboard', 'Keyboard'),
         ('Mouse', 'Mouse'),
         ('Monitor', 'Monitor'),
+        ('Motherboard','Motherboard'),
+        ('Graphics Card','Graphics Card')
     )
 
     name = models.CharField(max_length=200)
