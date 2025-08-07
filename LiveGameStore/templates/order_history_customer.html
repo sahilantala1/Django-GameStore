@@ -1,0 +1,85 @@
+{% extends 'base_a.html' %}
+{% load static %}
+{% block start %}
+
+{% include 'navbar.html' %}
+  <style>
+    body {
+      background-color: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #111;
+      border-radius: 8px;
+    }
+    h1 {
+      text-align: center;
+      color: #e1001a;
+      margin-bottom: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th {
+      background-color: #222;
+      color: #e1001a;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+    }
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #333;
+      vertical-align: middle;
+    }
+    .product-img {
+      height: 50px;
+    }
+    .no-orders {
+      text-align: center;
+      padding: 30px;
+      font-size: 18px;
+      color: #aaa;
+    }
+  </style>
+
+  <div class="container">
+    <h1>Your Orders</h1>
+
+    {% if orders_history %}
+      <table>
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Total Price</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders_history %}
+            <tr>
+              <td><img src="{{ order.image.url }}" alt="{{ order.product }}" class="product-img"></td>
+              <td>{{ order.product }}</td>
+              <td>{{ order.quantity }}</td>
+              <td>€{{ order.price }}</td>
+              <td>{{ order.date|date:"M. j, Y" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="no-orders">You have no orders yet.</div>
+    {% endif %}
+  </div>
+
+{% endblock %}
+

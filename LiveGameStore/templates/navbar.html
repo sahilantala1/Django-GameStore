@@ -1,8 +1,5 @@
-{% extends 'base_a.html' %}
 {% load static %}
 {% block start %}
-<!-- Add this in your <head> -->
-
 <style>
   .navbar-custom {
     background-color: #000;
@@ -17,16 +14,11 @@
     text-decoration: none;
   }
 
-  /* Fixed brand text color and hover */
   .rog-text {
-    color: #e1001a;
+    color: red;
     font-weight: bold;
     letter-spacing: 1px;
     line-height: 1.1;
-  }
-
-  .rog-text {
-    color: red; /* Prevent color change on hover */
   }
 
   .navbar-nav .nav-link {
@@ -45,14 +37,15 @@
     margin-left: 15px;
     cursor: pointer;
   }
-  .asus-text{
-    font-size:25px;
+
+  .asus-text {
+    font-size: 25px;
   }
 
   .bottom-bar {
     background-color: #e1001a;
     color: white;
-    text-align: right;
+    text-align: center;
     padding: 6px 20px;
     font-size: 13px;
     font-weight: bold;
@@ -63,14 +56,10 @@
     margin-right: 10px;
   }
 
-  .bottom-bar{
-    text-align: center;
+  .user-profile-name {
+    color: white;
+    font-size: 15px;
   }
-  .user-profile-name{
-     color:white;
-     font-size:15px;
-  }
-
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -94,31 +83,45 @@
         <li class="nav-item"><a class="nav-link" href="#">COMMUNITY</a></li>
         <li class="nav-item"><a class="nav-link" href="#">WHAT'S HOT</a></li>
         <li class="nav-item"><a class="nav-link" href="#">SUPPORT</a></li>
+
         {% if request.user.is_superuser %}
         <li class="nav-item"><a class="nav-link" href="{% url 'admin_login' %}">Admin</a></li>
         {% endif %}
-        {% if not request.user.is_superuser %}
-        <li class="nav-item">
-          <a class="nav-link" style="font-size:x-large;" href="{% url 'login' %}"><i class="fa-solid fa-user-secret"></i></a>
-        </li>
-         {% endif %}
       </ul>
     </div>
 
-    {% if request.user.is_authenticated %}
-  <div class="navbar-icons d-flex align-items-center">
-    <p class="user-profile-name mt-3">Hello, {{ request.user }}</p>
-    <a class="asus-text" href="{% url 'logout' %}">
-      <i class="fa-solid fa-arrow-right-from-bracket"></i>
-    </a>
+    <!-- User Icon Dropdown -->
+    <div class="dropdown ms-3">
+      {% if request.user.is_authenticated %}
+        <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fa-solid fa-user-secret h3"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+          <li><a class="dropdown-item" href="{% url 'orders_history' request.user.id %}">Orders</a></li>
+          <li><a class="dropdown-item" href="#">Profile</a></li>
+        </ul>
+      {% else %}
+        <a class="nav-link text-white" href="{% url 'login' %}">
+          <i class="fa-solid fa-user-secret h3"></i>
+        </a>
+      {% endif %}
+    </div>
 
-    {% if not request.user.is_superuser %}
-      <a class="asus-text" href="{% url 'show_cart' %}">
-        <i class="fa-solid fa-cart-shopping"></i>
+    <!-- Right Icons -->
+    {% if request.user.is_authenticated %}
+    <div class="navbar-icons d-flex align-items-center">
+      <p class="user-profile-name mt-3">Hello, {{ request.user }}</p>
+      <a class="asus-text" href="{% url 'logout' %}">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
       </a>
+
+      {% if not request.user.is_superuser %}
+        <a class="asus-text" href="{% url 'show_cart' %}">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </a>
+      {% endif %}
+    </div>
     {% endif %}
-  </div>
-{% endif %}
   </div>
 </nav>
 {% endblock %}

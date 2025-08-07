@@ -1,5 +1,11 @@
-body,
-body * {
-    color: green !important;
-    background-color:black !important;
+body {
+    color: #e74c3c;  /* Red font */
+}
+
+.module h2 {
+    color: #2c3e50;  /* Darker heading */
+}
+
+a {
+    color: #3498db !important;  /* Blue links */
 }

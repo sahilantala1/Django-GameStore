@@ -25,4 +25,6 @@ urlpatterns = [
     path('manage_user/delete/<int:id>/', views.delete_user, name='delete_user'),
     path('order_show/', views.manage_orders, name='order_show'),
     path('checkout/', views.checkout, name='checkout'),
+    path('orders_history/<int:id>', views.order_history_customer, name='orders_history'),
+    path('manage_user/ajax_search/', views.ajax_user_search, name='ajax_user_search')
 ]

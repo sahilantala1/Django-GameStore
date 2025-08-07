@@ -1,5 +1,4 @@
 from itertools import count
-
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse, HttpResponseNotAllowed
@@ -237,9 +236,21 @@ def product_detail(request, id):
     return render(request, 'product_details.html', context)
 
 def manage_user(request):
-    users = User.objects.all()
-    context = {'users': users}
-    # Normal full page load
+    query = request.GET.get('q', '')  # get search input from URL
+    if query:
+        users = User.objects.filter(
+            Q(username__icontains=query) | Q(email__icontains=query)
+        )
+    else:
+        users = User.objects.all()
+
+    print(query)
+
+    context = {
+        'users': users,
+        'query': query,  # so the input field retains the value
+    }
+
     return render(request, 'manage_user.html', context)
 
 def update_user(request,id):
@@ -286,31 +297,69 @@ def checkout(request):
         return redirect('show_cart')
 
     for item in cart.items.all():
+        product = item.product
+
+        # Check if stock is sufficient
+        if product.stock < item.quantity:
+            messages.error(request, f"Not enough stock for {product.name}.")
+            return redirect('show_cart')
+
+        # Place order
         Order.objects.create(
             user=request.user,
-            product=item.product,
-            image=item.product.image,
+            product=product,
+            image=product.image,
             quantity=item.quantity,
             price=item.total_price(),
             email=request.user.email
         )
+
+        # Reduce stock
+        product.stock -= item.quantity
+        product.save()
+
     # Clear the cart
     cart.items.all().delete()
 
     messages.success(request, "Order placed successfully.")
-    return redirect('product')  # Or to a new "order success" page
+    return redirect('product')
+
 
 @login_required
 def manage_orders(request):
-    orders = Order.objects.all()
+    all_orders = Order.objects.all().order_by('-date')  # Full list
+    paginator = Paginator(all_orders, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-    # Calculate total revenue of ALL orders
-    total_rev = sum(order.price for order in orders)
-    total_customer = orders.values('user_id').distinct().count()
+    total_rev = sum(order.price for order in all_orders)
+    total_customer = all_orders.values('user_id').distinct().count()
 
     context = {
-        'orders': orders,
+        'orders': page_obj.object_list,       # Paginated orders
+        'page_obj': page_obj,
+        'all_orders': all_orders,             # Full queryset for stats
         'total_rev': total_rev,
-        'total_customer':total_customer
+        'total_customer': total_customer
     }
     return render(request, 'order_show.html', context)
+
+def ajax_user_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        users = User.objects.filter(
+            Q(username__icontains=query) | Q(email__icontains=query)
+        )
+    else:
+        users = User.objects.all()
+
+    return render(request, 'user_table_rows.html', {'users': users})
+
+def order_history_customer(req, id):
+    try:
+        user = User.objects.get(id=id)
+        orders_history = Order.objects.filter(user=user).order_by('-id')  # adjust "user" field as per your model
+        context = {'orders_history': orders_history}
+        return render(req, 'order_history_customer.html', context)
+    except User.DoesNotExist:
+        return render(req, 'order_history_customer.html', {'error': 'User not found.'})

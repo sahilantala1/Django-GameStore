@@ -1,0 +1,5 @@
+/* custom_admin.css */
+
+body, .module caption, .module h2, .form-row label, th, td {
+    color: #1a73e8 !important;  /* Blue */
+}

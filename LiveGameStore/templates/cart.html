@@ -112,9 +112,9 @@
         </div>
 
         <form method="post" action="{% url 'checkout' %}" id="checkoutForm">
-  {% csrf_token %}
-  <button type="submit" class="btn btn-dark checkout-btn mt-3">CHECKOUT</button>
-</form>
+          {% csrf_token %}
+          <button type="submit" class="btn btn-dark checkout-btn mt-3">CHECKOUT</button>
+        </form>
 
       </div>
     </div>
@@ -124,19 +124,32 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-
   {% if messages %}
     {% for message in messages %}
-      Swal.fire({
-        icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% else %}info{% endif %}",
-        title: "{{ message }}",
-        showConfirmButton: false,
-        timer: 2500
-      });
+      {% if message.tags == 'success' %}
+        Swal.fire({
+          icon: 'success',
+          title: '{{ message|escapejs }}',
+          showConfirmButton: false,
+          timer: 2500
+        });
+      {% elif message.tags == 'error' %}
+        Swal.fire({
+          icon: 'error',
+          title: '{{ message|escapejs }}',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      {% else %}
+        Swal.fire({
+          icon: 'info',
+          title: '{{ message|escapejs }}',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      {% endif %}
     {% endfor %}
-
-{% endif %}
-
+  {% endif %}
 
   document.getElementById('checkoutForm').addEventListener('submit', function(e) {
     e.preventDefault(); // Stop default form submission
@@ -155,8 +168,6 @@
       }
     });
   });
-
-
 </script>
 
 {% endblock %}
