@@ -1,0 +1,83 @@
+{% extends 'base_a.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block start %}
+{% include 'navbar.html' %}
+
+<style>
+  body {
+    background-color: #000;
+    color: #fff;
+  }
+
+  .form-control {
+    background-color: #222;
+    color: #fff;
+    border: 1px solid #444;
+  }
+
+  .form-control:focus {
+    border-color: #ff003c;
+  }
+
+  .btn-rog {
+    background-color: #ff003c;
+    color: white;
+    border: none;
+  }
+  .btn-rog:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+</style>
+
+<div class="container">
+<div class="profile-container">
+  <h2>Edit Profile</h2>
+  <form id="editProfileForm" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label>Username</label>
+      {{ form.username }}
+    </div>
+
+    <div class="mb-3">
+      <label>Email</label>
+      {{ form.email }}
+    </div>
+
+    <button type="submit" class="btn btn-rog" id="submitBtn" disabled>Save Changes</button>
+  </form>
+</div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("editProfileForm");
+    const submitBtn = document.getElementById("submitBtn");
+
+    // Store initial form values
+    const initialData = new FormData(form);
+    const initial = {};
+    for (let [key, value] of initialData.entries()) {
+      initial[key] = value;
+    }
+
+    // Monitor changes to inputs
+    form.addEventListener("input", function () {
+      const currentData = new FormData(form);
+      let changed = false;
+
+      for (let [key, value] of currentData.entries()) {
+        if (initial[key] !== value) {
+          changed = true;
+          break;
+        }
+      }
+
+      submitBtn.disabled = !changed;
+    });
+  });
+</script>
+
+{% endblock %}

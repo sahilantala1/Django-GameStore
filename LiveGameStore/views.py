@@ -9,9 +9,8 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.template import engines
 from django.template.loader import render_to_string
-
 from .models import Product, Cart, CartItem, Order
-from .forms import CreateUserForm, ProductForm
+from .forms import *
 
 
 def login_page(req):
@@ -182,22 +181,6 @@ def delete_product(request, id):
         return redirect('manage_product')
     return redirect('manage_product')
 
-
-def edit_product(request, id):
-    product = get_object_or_404(Product, id=id)
-
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES, instance=product)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Product updated successfully!')
-            return redirect('manage_product')  # Redirect back to edit page to show message
-    else:
-        form = ProductForm(instance=product)
-
-    context = {'form': form}
-    return render(request, 'edit_product.html', context)
-
 def increase_quantity(request, item_id):
     item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
     item.quantity += 1
@@ -363,3 +346,41 @@ def order_history_customer(req, id):
         return render(req, 'order_history_customer.html', context)
     except User.DoesNotExist:
         return render(req, 'order_history_customer.html', {'error': 'User not found.'})
+
+def user_profile(req,id):
+    try:
+        user = User.objects.get(id=id)
+        context = {'user':user}
+        return render(req, 'user_profile.html', context)
+    except User.DoesNotExist:
+        return render(req,'user_profile.html', {'error': 'User Not Found'})
+
+def edit_product(request, id):
+    product = get_object_or_404(Product, id=id)
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_product')  # Redirect back to edit page to show message
+    else:
+        form = ProductForm(instance=product)
+
+    context = {'form': form}
+    return render(request, 'edit_product.html', context)
+
+def edit_profile(request):
+    user = request.user
+    print(user)
+    if request.method == 'POST':
+        form = EditUserForm(request.POST, request.FILES, instance=user)
+        print("form.is_valid():", form.is_valid())
+        print("Form errors:", form.errors)
+
+        if form.is_valid():
+            form.save()
+            return redirect('user_profile',id=user.id)
+    else:
+        form = EditUserForm(instance=user)
+
+    return render(request, 'edit_profile.html', {'form': form})

@@ -26,5 +26,7 @@ urlpatterns = [
     path('order_show/', views.manage_orders, name='order_show'),
     path('checkout/', views.checkout, name='checkout'),
     path('orders_history/<int:id>', views.order_history_customer, name='orders_history'),
-    path('manage_user/ajax_search/', views.ajax_user_search, name='ajax_user_search')
+    path('manage_user/ajax_search/', views.ajax_user_search, name='ajax_user_search'),
+    path('user_profile/<int:id>/', views.user_profile, name='user_profile'),
+    path('edit_profile/', views.edit_profile, name='edit_profile')
 ]

@@ -1,0 +1,62 @@
+{% extends 'base_a.html' %}
+{% load static %}
+{% block start %}
+{% include 'navbar.html' %}
+
+<section class="py-5" style="background-color: #f7f9fb; font-family: 'Metropolis', sans-serif;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+
+        <!-- Profile Card -->
+        <div class="card shadow-sm border-0 rounded-4">
+          <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center gap-4">
+
+            <!-- Avatar Icon -->
+            <div class="text-center">
+              <div class="rounded-circle bg-light d-flex justify-content-center align-items-center" style="width: 100px; height: 100px;">
+                <i class="fa-solid fa-user fs-1 text-secondary"></i>
+              </div>
+            </div>
+
+            <!-- User Info -->
+            <div class="flex-grow-1 text-center text-md-start">
+              <h4 class="fw-bold mb-1 text-dark">{{ user.username|capfirst }}</h4>
+              <p class="text-muted mb-2">{{ user.email }}</p>
+
+              <div class="d-flex justify-content-center justify-content-md-start gap-2 mt-2">
+                <a href="{% url 'edit_profile' %}" class="btn btn-outline-dark btn-sm rounded-pill">Edit Profile</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Optional: Order Summary, Wishlist, etc. -->
+        <div class="card mt-4 border-0 shadow-sm rounded-4">
+          <div class="card-body">
+            <h5 class="fw-semibold mb-3">Account Summary</h5>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between">
+                <span>Orders</span>
+                <a href="{% url 'orders_history' user.id %}" class="text-decoration-none">View All</a>
+              </li>
+              <li class="list-group-item d-flex justify-content-between">
+                <span>Wishlist</span>
+                <a href="" class="text-decoration-none">View Items</a>
+              </li>
+              <li class="list-group-item d-flex justify-content-between">
+                <span>Support Tickets</span>
+                <a href="#" class="text-decoration-none">Track</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{% endblock %}
